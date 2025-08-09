@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dương Hà Naraka - Shop mã QR</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #f9f9f9, #f0f4ff);
+      color: #333;
+    }
+    header {
+      background: #1e88e5;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    main {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+    .item {
+      background: white;
+      border-radius: 16px;
+      padding: 1rem;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .item:hover {
+      transform: scale(1.03);
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+    }
+    .item img {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+    }
+    .item h3 {
+      margin: 0.5rem 0;
+      font-size: 1.25rem;
+      color: #1e88e5;
+    }
+    .item button {
+      background: #ff4081;
+      border: none;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .item button:hover {
+      background: #e91e63;
+    }
+    .cart {
+      position: fixed;
+      right: 20px;
+      top: 60px;
+      background: #ffffff;
+      padding: 1rem 1.5rem 1.5rem 1.5rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      max-width: 320px;
+      width: 100%;
+      z-index: 1000;
+      display: none;
+      overflow-y: auto;
+      max-height: 80vh;
+    }
+    .cart.show {
+      display: block;
+    }
+    .cart h2 {
+      margin-top: 0;
+      font-size: 1.25rem;
+      color: #1e88e5;
+      margin-bottom: 0.8rem;
+    }
+    .cart-item {
+      margin: 0.5rem 0;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.95rem;
+    }
+    .checkout-btn, .home-btn {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      width: 100%;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .checkout-btn {
+      background: #4caf50;
+      color: white;
+    }
+    .checkout-btn:hover {
+      background: #388e3c;
+    }
+    .home-btn {
+      background: #f44336;
+      color: white;
+    }
+    .home-btn:hover {
+      background: #d32f2f;
+    }
+    .cart-icon {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #1e88e5;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 1001;
+      font-size: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    .notification {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #4caf50;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease, bottom 0.5s ease;
+      z-index: 2000;
+    }
+    .notification.show {
+      opacity: 1;
+      bottom: 40px;
+      pointer-events: auto;
+    }
+    .qr-img {
+      width: 100%;
+      max-width: 150px;
+      display: block;
+      margin: 1rem auto 0 auto;
+      border-radius: 12px;
+    }
+
+    /* CSS Đăng nhập/Đăng ký trong cart */
+    #auth-container {
+      margin-top: 1.5rem;
+      border-top: 1px solid #ddd;
+      padding-top: 1rem;
+    }
+    #auth-container h3 {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      color: #1e88e5;
+      text-align: center;
+    }
+    #auth-container input[type="email"],
+    #auth-container input[type="password"] {
+      width: 100%;
+      padding: 10px 12px;
+      margin: 0.5rem 0 1rem 0;
+      border: 1.8px solid #ddd;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+    #auth-container input[type="email"]:focus,
+    #auth-container input[type="password"]:focus {
+      border-color: #1e88e5;
+      outline: none;
+      box-shadow: 0 0 8px rgba(30, 136, 229, 0.4);
+    }
+    #auth-container button {
+      width: 48%;
+      padding: 10px 0;
+      margin: 0.4rem 1% 0 1%;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      color: white;
+    }
+    #auth-container button:first-child {
+      background: #1e88e5;
+    }
+    #auth-container button:first-child:hover {
+      background: #1565c0;
+    }
+    #auth-container button:last-child {
+      background: #ff4081;
+    }
+    #auth-container button:last-child:hover {
+      background: #c60055;
+    }
+    #auth-message {
+      margin-top: 1rem;
+      min-height: 1.4rem;
+      font-size: 0.95rem;
+      text-align: center;
+      color: #d32f2f;
+    }
+
+    @media (max-width: 768px) {
+      main {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+      }
+      .cart {
+        max-width: 90vw;
+        right: 5vw;
+        top: 60px;
+      }
+    }
+  </style>
+</head>
+<!-- Phần phát nhạc nền -->
+<audio id="bg-music" loop hidden>
+  <source src="am nhac/COCHACYEULADAY-SonTungMTP-6316913.mp3" type="audio/mpeg" />
+  Trình duyệt của bạn không hỗ trợ phát nhạc.
+</audio>
+
+<script>
+  // Phát nhạc khi người dùng lần đầu nhấn vào trang
+  document.addEventListener('click', function () {
+    const music = document.getElementById('bg-music');
+    if (music.paused) {
+      music.play().catch(e => {
+        console.warn('Không thể phát nhạc:', e);
+      });
+    }
+  });
+</script>
+<body>
+  <header>Dương Hà Naraka - Shop mã QR</header>
+  <div class="cart-icon" onclick="toggleCart()">🛒</div>
+  <div class="cart" id="cart">
+    <h2>Giỏ hàng</h2>
+    <div id="cart-items"></div>
+    <button class="checkout-btn">Thanh toán bằng QR</button>
+    <img src="hinh anh/maqrkalite.jpg" alt="Thanh toán bằng QR" class="qr-img">
+    <button class="home-btn" onclick="location.reload()">Về trang chủ</button>
+
+    <!-- Form đăng nhập / đăng ký bên trong giỏ hàng -->
+    <div id="auth-container">
+      <h3>Đăng nhập / Đăng ký</h3>
+      <input type="email" id="email" placeholder="Email" />
+      <input type="password" id="password" placeholder="Mật khẩu" />
+      <div style="text-align:center;">
+        <button onclick="register()">Đăng ký</button>
+        <button onclick="login()">Đăng nhập</button>
+      </div>
+      <div id="auth-message"></div>
+    </div>
+  </div>
+  <main>
+    <div class="item">
+      <img src="hinh anh/516364554_1028176239525802_9050297134162413491_n.jpg" alt="Điêu Thuyền">
+      <h3>Điêu Thuyền</h3>
+      <button onclick="addToCart('Điêu Thuyền')">Thêm vào giỏ</button>
+    </div>
+    <div class="item">
+      <img src="hinh anh/518274263_1028175972859162_6260760042527057205_n.jpg" alt="Mã Tú Anh">
+      <h3>Mã Tú Anh</h3>
+      <button onclick="addToCart('Mã Tú Anh')">Thêm vào giỏ</button>
+    </div>
+    <div class="item">
+      <img src="hinh anh/518275298_1029649722711787_6513425702264362360_n.jpg" alt="Trần Huyền Linh">
+      <h3>Trần Huyền Linh</h3>
+      <button onclick="addToCart('Trần Huyền Linh')">Thêm vào giỏ</button>
+    </div>
+  </main>
+  <div class="notification" id="notification">Đã thêm vào giỏ!</div>
+
+  <script>
+    const cartItems = document.getElementById('cart-items');
+    const notification = document.getElementById('notification');
+    const cart = {};
+
+    function addToCart(name) {
+      if (!cart[name]) cart[name] = 0;
+      cart[name]++;
+      renderCart();
+      showNotification();
+    }
+
+    function renderCart() {
+      cartItems.innerHTML = '';
+      for (let item in cart) {
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.textContent = `${item} x ${cart[item]}`;
+        cartItems.appendChild(div);
+      }
+    }
+
+    function toggleCart() {
+      document.getElementById('cart').classList.toggle('show');
+    }
+
+    function showNotification() {
+      notification.classList.add('show');
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 1500);
+    }
+
+    // Đăng ký giả lập
+    const authMessage = document.getElementById('auth-message');
+
+    function register() {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      if (!email || !password) {
+        authMessage.style.color = '#d32f2f';
+        authMessage.textContent = 'Vui lòng nhập đầy đủ email và mật khẩu để đăng ký.';
+        return;
+      }
+      authMessage.style.color = '#4caf50';
+      authMessage.textContent = `Đăng ký thành công cho ${email} (giả lập).`;
+    }
+
+    function login() {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      if (!email || !password) {
+        authMessage.style.color = '#d32f2f';
+        authMessage.textContent = 'Vui lòng nhập đầy đủ email và mật khẩu để đăng nhập.';
+        return;
+      }
+      authMessage.style.color = '#4caf50';
+      authMessage.textContent = `Đăng nhập thành công cho ${email} (giả lập).`;
+    }
+  </script>
+
+  <audio autoplay loop hidden>
+    <source src="am nhac/DuongLenPhiaTruoc-TienMinh-3152429.mp3" type="audio/mpeg" />
+    Trình duyệt của bạn không hỗ trợ phát nhạc.
+  </audio>
+</body>
+</html>
